@@ -37,6 +37,15 @@ public class TelemetryController {
                 .collect(Collectors.toList());
     }
 
+    @Get(uri = "{houseId}/{sensorId}/measurements/latest",
+            produces = MediaType.APPLICATION_JSON)
+    public Measurement getLatestTelemetry(@Parameter Integer houseId, @Parameter Integer sensorId){
+        return telemetryService.getLatestMeasurement(houseId, sensorId)
+                .map(v -> new Measurement(v.getDatetime(), new DoubleValue(v.getValue())))
+                .orElse(null);
+
+    }
+
     @Post(uri = "{houseId}/{sensorId}/measurements",
             consumes = MediaType.APPLICATION_JSON,
             produces = MediaType.APPLICATION_JSON)

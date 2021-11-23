@@ -6,6 +6,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Singleton
@@ -26,5 +27,10 @@ public class TelemetryService {
         House house = stateService.getOrCreate(houseId);
         return house.getOrCreateSensorDataQueue(sensorId).stream()
                 .collect(Collectors.toList());
+    }
+
+    public Optional<SensorData> getLatestMeasurement(Integer houseId, Integer sensorId){
+        House house = stateService.getOrCreate(houseId);
+        return house.getLatestSensorData(sensorId);
     }
 }
