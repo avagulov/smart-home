@@ -107,10 +107,18 @@
 
     </dependencies>
 
-
-
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <to>
+                        <image>docker.io/avagulov/smarthome:latest</image>
+                    </to>
+                </configuration>
+            </plugin>
+
             <plugin>
                 <groupId>io.micronaut.build</groupId>
                 <artifactId>micronaut-maven-plugin</artifactId>
