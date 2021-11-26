@@ -39,7 +39,7 @@
                 </os>
             </activation>
             <properties>
-                <from.image>docker.io/i386/openjdk:11-jdk</from.image>
+                <from.image>docker.io/i386/openjdk@sha256:2a9f651daa6a27437fa956afd49e1f5e197b49f7901a76c10a01181098c877f8</from.image>
             </properties>
         </profile>
     </profiles>
