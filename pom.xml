@@ -20,6 +20,7 @@
         <micronaut.version>3.1.4</micronaut.version>
         <exec.mainClass>com.rebelraven.smarthome.serverApplication</exec.mainClass>
         <micronaut.runtime>netty</micronaut.runtime>
+        <from.image>openjdk:17-jdk-alpine</from.image>
     </properties>
 
     <repositories>
@@ -28,6 +29,20 @@
             <url>https://repo.maven.apache.org/maven2</url>
         </repository>
     </repositories>
+
+    <profiles>
+        <profile>
+            <id>i386</id>
+            <activation>
+                <os>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <from.image>docker.io/i386/openjdk:11-jdk</from.image>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <dependency>
@@ -113,6 +128,9 @@
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
+                    <from>
+                        <image>${from.image}</image>
+                    </from>
                     <to>
                         <image>docker.io/avagulov/smarthome:latest</image>
                     </to>
