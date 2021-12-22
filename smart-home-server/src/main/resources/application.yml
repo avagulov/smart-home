@@ -1,3 +1,9 @@
 micronaut:
   application:
     name: smarthome
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/static/**"
+        paths: classpath:static

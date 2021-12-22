@@ -18,6 +18,7 @@
     <modules>
         <module>smart-home-server</module>
         <module>smart-home-front</module>
+        <module>smart-home-web</module>
     </modules>
 
     <properties>
@@ -33,27 +34,20 @@
         </repository>
     </repositories>
 
-    <profiles>
-        <profile>
-            <id>i386</id>
-            <activation>
-                <os>
-                    <arch>x86</arch>
-                </os>
-            </activation>
-            <properties>
-                <!--https://github.com/GoogleContainerTools/jib/issues/2148-->
-                <!--https://hub.docker.com/layers/i386/openjdk/11-jdk/images/sha256-2a9f651daa6a27437fa956afd49e1f5e197b49f7901a76c10a01181098c877f8?context=explore-->
-                <from.image>
-                    docker.io/i386/openjdk@sha256:2a9f651daa6a27437fa956afd49e1f5e197b49f7901a76c10a01181098c877f8
-                </from.image>
-                <to.image>docker.io/avagulov/smarthome:i386</to.image>
-            </properties>
-        </profile>
-    </profiles>
-
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.rebelraven.smarthome</groupId>
+                <artifactId>smart-home-server</artifactId>
+                <version>0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>com.rebelraven.smarthome</groupId>
+                <artifactId>smart-home-front</artifactId>
+                <type>war</type>
+                <version>0.1</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>

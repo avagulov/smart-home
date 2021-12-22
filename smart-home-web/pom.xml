@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.rebelraven.smarthome</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.1</version>
+    </parent>
+
+    <groupId>com.example</groupId>
+    <artifactId>smart-home-web</artifactId>
+    <version>0.1</version>
+
+    <properties>
+        <from.image>openjdk:17-jdk-alpine</from.image>
+        <to.image>docker.io/avagulov/smarthome:latest</to.image>
+        <exec.mainClass>com.rebelraven.smarthome.server.Application</exec.mainClass>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>i386</id>
+            <activation>
+                <os>
+                    <arch>x86</arch>
+                </os>
+            </activation>
+            <properties>
+                <!--https://github.com/GoogleContainerTools/jib/issues/2148-->
+                <!--https://hub.docker.com/layers/i386/openjdk/11-jdk/images/sha256-2a9f651daa6a27437fa956afd49e1f5e197b49f7901a76c10a01181098c877f8?context=explore-->
+                <from.image>
+                    docker.io/i386/openjdk@sha256:2a9f651daa6a27437fa956afd49e1f5e197b49f7901a76c10a01181098c877f8
+                </from.image>
+                <to.image>docker.io/avagulov/smarthome:i386</to.image>
+            </properties>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.rebelraven.smarthome</groupId>
+            <artifactId>smart-home-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.rebelraven.smarthome</groupId>
+            <artifactId>smart-home-front</artifactId>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>io.micronaut.build</groupId>
+                <artifactId>micronaut-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${exec.mainClass}</mainClass>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.3.2</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <overlays>
+                        <overlay>
+                            <groupId>com.rebelraven.smarthome</groupId>
+                            <artifactId>smart-home-front</artifactId>
+                        </overlay>
+                    </overlays>
+                </configuration>
+            </plugin>
+
+            <plugin>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-layer-filter-extension-maven</artifactId>
+                        <version>0.2.0</version>
+                    </dependency>
+                </dependencies>
+
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <configuration>
+                    <from>
+                        <image>${from.image}</image>
+                    </from>
+                    <to>
+                        <image>${to.image}</image>
+                    </to>
+                    <containerizingMode>packaged</containerizingMode>
+                    <container>
+                        <mainClass>${exec.mainClass}</mainClass>
+                    </container>
+
+<!--                    jib работает только с классами, а мы пытаемся засунуть в него убер-джар. -->
+<!--                    Дублирование зависимостей приводит к некорректной работе, поэтому просто не пропускаем ничего в зависимости-->
+                    <pluginExtensions>
+                        <pluginExtension>
+                            <implementation>com.google.cloud.tools.jib.maven.extension.layerfilter.JibLayerFilterExtension</implementation>
+                            <configuration implementation="com.google.cloud.tools.jib.maven.extension.layerfilter.Configuration">
+                                <filters>
+                                    <filter>
+                                        <glob>**/libs/*.jar</glob>
+                                    </filter>
+                                </filters>
+                            </configuration>
+                        </pluginExtension>
+                    </pluginExtensions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
