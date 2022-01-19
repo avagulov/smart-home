@@ -25,7 +25,7 @@ class TelemetryControllerIT {
     HttpClient httpClient;
 
     @Test
-    void shoud_return_empty_measurements() {
+    void should_return_empty_measurements() {
         final Measurement[] result = httpClient.toBlocking()
                 .retrieve(HttpRequest.GET("/v1/telemetry/1/1/measurements"), Measurement[].class);
 
@@ -33,7 +33,7 @@ class TelemetryControllerIT {
     }
 
     @Test
-    void shoud_return_not_found_measurements() {
+    void should_return_not_found_measurements() {
         HttpClientResponseException hcre = assertThrows(HttpClientResponseException.class, () -> {
             final HttpResponse<Measurement> result = httpClient.toBlocking()
                     .exchange(HttpRequest.GET("/v1/telemetry/1/1/measurements/latest"),
