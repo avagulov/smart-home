@@ -10,6 +10,8 @@ import jakarta.inject.Singleton;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Singleton
 public class MongoDbSensorDataRepository implements SensorDataRepository {
     private final MongoDbConfig mongoConfig;
@@ -31,7 +33,11 @@ public class MongoDbSensorDataRepository implements SensorDataRepository {
         BasicDBObject query = new BasicDBObject();
         query.put("house-id", houseId);
         query.put("sensor-id", sensorId);
-        return getSensorData().find(query);
+
+        BasicDBObject sorter = new BasicDBObject();
+        sorter.put("datetime", -1);
+
+        return getSensorData().find(query).sort(sorter);
     }
 
     @Override
@@ -53,6 +59,13 @@ public class MongoDbSensorDataRepository implements SensorDataRepository {
     public Mono<Boolean> save(SensorDataEntity sensorDataEntity) {
         return Mono.from(getSensorData().insertOne(sensorDataEntity))
                 .map(insertOneResult -> Boolean.TRUE)
+                .onErrorReturn(Boolean.FALSE);
+    }
+
+    @Override
+    public Mono<Boolean> save(List<SensorDataEntity> sensorDataEntities) {
+        return Mono.from(getSensorData().insertMany(sensorDataEntities))
+                .map(insertManyResult -> Boolean.TRUE)
                 .onErrorReturn(Boolean.FALSE);
     }
 

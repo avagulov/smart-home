@@ -6,6 +6,7 @@ import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public interface SensorDataRepository {
     @NonNull
@@ -19,4 +20,6 @@ public interface SensorDataRepository {
 
     @NonNull
     Mono<Boolean> save(@NonNull @NotNull @Valid SensorDataEntity sensorDataEntity);
+
+    Mono<Boolean> save(List<SensorDataEntity> sensorDataEntities);
 }
