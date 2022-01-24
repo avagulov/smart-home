@@ -1,5 +1,6 @@
 package com.rebelraven.smarthome.server.controller.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.micronaut.core.annotation.Introspected;
 import lombok.*;
 
@@ -11,5 +12,6 @@ public class SensorData {
     @NonNull
     Integer sensorId;
     @NonNull
+    @JsonProperty("measurement-data")
     MeasurementData measurementData;
 }
